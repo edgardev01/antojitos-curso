@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos</title>
+    <link rel="stylesheet" href="productos.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <nav>
+        <div class="logo">MiTienda</div>
+        <div class="menu">
+            <a href="index.html">Inicio</a>
+            <a href="cerrar_sesion.php">Cerrar Sesión</a>
+        </div>
+    </nav>
+    <main>
+        <h1>Bienvenido a la tienda</h1>
+        <p>Explora nuestros productos y realiza tu pedido.</p>
+
+        <form id="pedidoForm" method="POST" action="realizar_pedido.php">
+            <h2>Realiza tu pedido</h2>
+            <label for="producto">Selecciona un producto:</label>
+            <select name="producto" id="producto" required>
+                <option value="1">Producto 1 - $10.50</option>
+                <option value="2">Producto 2 - $20.00</option>
+                <option value="3">Producto 3 - $15.75</option>
+            </select>
+
+            <label for="cantidad">Cantidad:</label>
+            <input type="number" name="cantidad" id="cantidad" min="1" required>
+
+            <button type="submit">Agregar al pedido</button>
+        </form>
+
+        <div id="resultado"></div>
+    </main>
+
+    <script>
+        document.getElementById('pedidoForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Prevenir el envío del formulario
+
+            const producto = document.getElementById('producto').value;
+            const cantidad = document.getElementById('cantidad').value;
+
+            try {
+                const response = await fetch('realizar_pedido.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ producto, cantidad })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    Swal.fire('Pedido realizado', 'Tu pedido se ha agregado correctamente.', 'success');
+                } else {
+                    Swal.fire('Error', data.message, 'error');
+                }
+            } catch (error) {
+                Swal.fire('Error', 'Hubo un problema al procesar tu pedido.', 'error');
+            }
+        });
+    </script>
+</body>
+</html>
